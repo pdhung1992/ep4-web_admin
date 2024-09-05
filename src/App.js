@@ -18,6 +18,7 @@ function App() {
     <div>
       <Routes>
         <Route path={'/*'} element={<PrivateRoute element={<AdminLayout/>}/>}/>
+        {/*<Route path={'/*'} element={<AdminLayout/>}/>*/}
         <Route path={'/login'} element={<Login/>}/>
       </Routes>
     </div>
