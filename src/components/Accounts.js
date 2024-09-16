@@ -80,7 +80,6 @@ const Accounts = () => {
         fetchRoles();
     }, [])
 
-
     useEffect(() => {
         fetchAccounts();
     }, [pageNo, pageSize, sortField, sortDir, filterChange])

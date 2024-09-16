@@ -1,7 +1,7 @@
 import {Helmet} from "react-helmet";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import authServices from "../services/auth-services";
 import {loginSuccess, loginFail} from "../actions/auth-actions";
 
@@ -44,8 +44,6 @@ const Login = () => {
             setMessage(resMessage);
         }
     }
-
-    console.log(admin);
 
     const checkLogin = () => {
         if (admin && admin.adminData) {
@@ -191,9 +189,9 @@ const Login = () => {
                                     <div className="mb-3 form-password-toggle">
                                         <div className="d-flex justify-content-between">
                                             <label className="form-label" htmlFor="password">Password</label>
-                                            <a href="auth-forgot-password-basic.html">
+                                            <Link to={'/forgot-password'}>
                                                 <small>Forgot Password?</small>
-                                            </a>
+                                            </Link>
                                         </div>
                                         <div className="input-group input-group-merge">
                                             <input

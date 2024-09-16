@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {IMAGE_URL} from "../../constants/constants";
+import {DEFAULT_POSTER, IMAGE_URL} from "../../constants/constants";
 import * as PropTypes from "prop-types";
 import {useEffect, useState} from "react";
 import crewService from "../../services/crew-service";
@@ -19,7 +19,7 @@ const CreateMovie = () => {
         credentials: "true"
     }
 
-    const defaultPoster = '/assets/img/demo/default_poster.png';
+    const defaultPoster = DEFAULT_POSTER;
     const [selectedPoster, setSelectedPoster] = useState(null);
     const [previewPoster, setPreviewPoster] = useState(defaultPoster);
 

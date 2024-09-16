@@ -13,10 +13,11 @@ import {
     CREATE_MOVIE,
     FUNCTIONS_LIST,
     MOVIES_LIST,
-    ROLES_LIST
+    ROLES_LIST, STUDIO_LIST
 } from "../constants/constants";
 import Movies from "../components/movie/Movies";
 import CreateMovie from "../components/movie/CreateMovie";
+import StudiosManagement from "../components/movie/StudiosManagement";
 
 
 const AdminLayout = () => {
@@ -123,26 +124,26 @@ const AdminLayout = () => {
                             {/* Dashboard */}
                             <li className="menu-item">
                                 <Link to={'/'} className="menu-link">
-                                    <i className="menu-icon tf-icons bx bx-home-circle"></i>
-                                    <div data-i18n="Analytics">Dashboard</div>
+                                    <i className="menu-icon tf-icons bx bx-home-circle text-primary"></i>
+                                    <div data-i18n="Analytics" className={'text-primary'}>Dashboard</div>
                                 </Link>
                             </li>
 
                             {/* Layouts */}
                             <li className="menu-header small text-uppercase"><span
-                                className="menu-header-text">Menu Functions</span></li>
+                                className="menu-header-text text-black">Menu Functions</span></li>
                             {Array.isArray(functions) && functions.length > 0 ? functions.map((func, index) => (
                                 <li className="menu-item" key={index}>
                                     <Link to={func.slug} className="menu-link menu-toggle">
-                                        <i className={`menu-icon tf-icons bx ${func.icon}`}></i>
-                                        <div data-i18n="Account Settings">{func.name}</div>
+                                        <i className={`menu-icon tf-icons bx ${func.icon} text-primary`}></i>
+                                        <div data-i18n="Account Settings" className={'text-primary'}>{func.name}</div>
                                     </Link>
                                     <ul className="menu-sub">
                                         {Array.isArray(func.childFunctions) && func.childFunctions.length > 0 ? (
                                             func.childFunctions.map((child, index) => (
                                                 <li className="menu-item" key={index}>
                                                     <Link to={`${func.slug}/${child.slug}`} className="menu-link">
-                                                        <div data-i18n="Account">{child.name}</div>
+                                                        <div data-i18n="Account" className={'text-info'}>{child.name}</div>
                                                     </Link>
                                                 </li>
                                             ))
@@ -152,13 +153,13 @@ const AdminLayout = () => {
                             )) : []}
 
                             <li className="menu-header small text-uppercase"><span
-                                className="menu-header-text">Account</span></li>
+                                className="menu-header-text text-black">Account</span></li>
                             <li className="menu-item">
                                 <Link to={ACCOUNT_SETTINGS}
                                       className="menu-link"
                                 >
-                                    <i className="menu-icon tf-icons bx bx-cog"></i>
-                                    <div data-i18n="Support">Account settings</div>
+                                    <i className="menu-icon tf-icons bx bx-cog text-primary"></i>
+                                    <div data-i18n="Support" className={'text-primary'}>Account settings</div>
                                 </Link>
                             </li>
                         </ul>
@@ -255,6 +256,7 @@ const AdminLayout = () => {
                                     <Route path={FUNCTIONS_LIST} element={<Functions/>}/>
                                     <Route path={MOVIES_LIST} element={<Movies/>}/>
                                     <Route path={CREATE_MOVIE} element={<CreateMovie/>}/>
+                                    <Route path={STUDIO_LIST} element={<StudiosManagement/>}/>
                                 </Routes>
                             {/* / Content */}
                         </div>

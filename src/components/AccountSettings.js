@@ -30,8 +30,6 @@ const AccountSettings = () => {
         setPreviewUrl(URL.createObjectURL(file));
     };
 
-
-
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
     const closeToast = useRef(null);
@@ -51,19 +49,31 @@ const AccountSettings = () => {
 
     const closeChangePwdModal = useRef(null);
 
+    const fetchNewAvatar = async () => {
+        const data = await authServices.getNewAvatar(axiosConfig);
+        console.log(data);
+        if (data && data.responseCode === 200) {
+            dispatch(changeAvatar(data.responseMessage));
+        }
+    }
+
     const handleChangeAvatar = async (e) => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('id', admin.adminData.id);
         formData.append('avatar', selectedFile);
-        const data = await authServices.changeAvatar(formData);
+        const data = await authServices.changeAvatar(formData, axiosConfig);
         if (data && data.responseCode === 200) {
             setSelectedFile(null);
-            setToastMessage(data.message);
+            setToastMessage(data.responseMessage);
             setToastType('success');
             setShowToast(true);
-            dispatch(changeAvatar(data.avatar));
+            fetchNewAvatar(axiosConfig);
             navigate(ACCOUNT_SETTINGS);
+        }else {
+            setToastMessage(data.responseMessage);
+            setToastType('danger');
+            setShowToast(true);
         }
     }
 
@@ -94,13 +104,12 @@ const AccountSettings = () => {
         if (isPasswordMatch) {
             e.preventDefault();
             const formData = {
-                id: admin.adminData.id,
                 password: passwordInput,
                 newPassword: newPasswordInput
             }
-            const data = await authServices.changePassword(formData);
+            const data = await authServices.changePassword(formData, axiosConfig);
             if (data && data.responseCode === 200) {
-                setToastMessage(data.message);
+                setToastMessage(data.responseMessage);
                 setToastType('success');
                 setShowToast(true);
                 setPasswordInput('');
@@ -108,7 +117,7 @@ const AccountSettings = () => {
                 setNewPasswordCfmInput('');
                 closeChangePwdModal.current.click();
             } else {
-                setToastMessage(data.message);
+                setToastMessage(data.responseMessage);
                 setToastType('danger');
                 setShowToast(true);
             }
@@ -190,7 +199,7 @@ const AccountSettings = () => {
                 <div className="col-lg-4 col-md-4 order-1">
                     <div className="card" style={{height: '60vh'}}>
                         <div className="card-body">
-                            <img src={previewUrl || (imgUrl + admin.adminData.avatar)} height={'auto'} alt=""
+                            <img src={previewUrl || (IMAGE_URL + admin.adminData.avatar)} height={'auto'} alt=""
                                  className={'img-fluid'}/>
                         </div>
                         <div className={'card-footer row'}>
