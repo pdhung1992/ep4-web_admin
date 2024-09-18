@@ -647,6 +647,11 @@ const StudiosManagement = () => {
                         <div className="modal-footer">
                             <button type="button"
                                     className="btn btn-outline-warning"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editModal"
+                                    onClick={() => {
+                                        setEditStudio(viewStudio);
+                                    }}
                             >
                                 <span className="tf-icons bx bx-edit-alt"></span>&nbsp; Edit {viewStudio.name}
                             </button>

@@ -12,12 +12,13 @@ import {
     ACCOUNTS_LIST,
     CREATE_MOVIE,
     FUNCTIONS_LIST,
-    MOVIES_LIST,
+    MOVIES_LIST, PACKAGES_LIST,
     ROLES_LIST, STUDIO_LIST
 } from "../constants/constants";
 import Movies from "../components/movie/Movies";
 import CreateMovie from "../components/movie/CreateMovie";
 import StudiosManagement from "../components/movie/StudiosManagement";
+import Packages from "../components/Packages";
 
 
 const AdminLayout = () => {
@@ -257,6 +258,7 @@ const AdminLayout = () => {
                                     <Route path={MOVIES_LIST} element={<Movies/>}/>
                                     <Route path={CREATE_MOVIE} element={<CreateMovie/>}/>
                                     <Route path={STUDIO_LIST} element={<StudiosManagement/>}/>
+                                    <Route path={PACKAGES_LIST} element={<Packages/>}/>
                                 </Routes>
                             {/* / Content */}
                         </div>

@@ -63,12 +63,22 @@ export const API_COUNTRIES_LIST = '/countries';
 //studios
 
 export const API_STUDIOS_LIST = '/studios';
+export const API_STUDIOS_LIST_SELECT = '/studios/select';
 export const API_CREATE_STUDIO = '/studios/create';
 export const API_UPDATE_STUDIO = '/studios/update';
 export const API_DELETE_STUDIO = '/studios/delete';
 
 //Crews
 export const API_CREWS_POSITIONS = '/crew-positions';
+
+//Packages
+export const PACKAGES_LIST = '/packages-management/packages-list';
+
+export const API_PACKAGES_LIST = '/packages';
+export const API_PACKAGES_LIST_SELECT = '/packages/select';
+export const API_CREATE_PACKAGE = '/packages/create';
+export const API_UPDATE_PACKAGE = '/packages/update';
+export const API_DELETE_PACKAGE = '/packages/delete';
 
 //Bs Colors
 export const BS_COLORS = [
