@@ -18,6 +18,22 @@ const getStudios = async (pageNo, pageSize, sortField, sortDir, name, countryId)
     }
 }
 
+const getStudiosSelect = async () => {
+    try {
+        const url = `${API_STUDIOS_LIST}/select`;
+        const res = await apiServices.get(url);
+        return res.data;
+    }catch (error){
+        if (error.response) {
+            return error.response.data;
+        } else if (error.request) {
+            return 'No response from server';
+        } else {
+            return 'An error occurred';
+        }
+    }
+}
+
 const createStudio = async (formData, axiosConfig) => {
     try {
         const url = API_CREATE_STUDIO;
@@ -68,6 +84,7 @@ const deleteStudio = async (id) => {
 
 const studiosServices = {
     getStudios,
+    getStudiosSelect,
     createStudio,
     updateStudio,
     deleteStudio

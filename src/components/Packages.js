@@ -244,7 +244,7 @@ const Packages = () => {
                                 <tbody className="table-border-bottom-0">
                                 {Array.isArray(packages.data) && packages.data.length > 0 ? packages.data.map((pkg, index) => (
                                     <tr key={index}>
-                                        <td className={'d-flex align-items-center'}>
+                                        <td>
                                             <strong>{pkg.name}</strong>
                                         </td>
                                         <td>

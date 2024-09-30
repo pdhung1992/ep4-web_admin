@@ -91,7 +91,7 @@ const StudiosManagement = () => {
     const handleClearFilter = async () => {
         setName('');
         setCountryId('');
-        const data = await accountServices.getAccountsList(pageNo, pageSize, sortField, sortDir, name, countryId);
+        const data = await studioServices.getStudios(pageNo, pageSize, sortField, sortDir, name, countryId);
         setStudios(data);
         setPageArr(Array.from({length: data.totalPages}, (v, i) => i + 1));
         setFilterChange(!filterChange);

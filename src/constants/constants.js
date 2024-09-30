@@ -54,11 +54,36 @@ export const MOVIE_DETAILS = '/movies-management/movie-details';
 export const UPDATE_MOVIE = '/movies-management/update-movie';
 export const STUDIO_LIST = '/movies-management/studios';
 
+export const API_MOVIE_LIST = '/movies';
+export const API_MOVIE_DETAILS = '/movies/admin/details';
+export const API_CREATE_MOVIE = '/movies/create';
+export const API_UPDATE_MOVIE = '/movies/update';
+export const API_UPDATE_MOVIE_SHOW = '/movies/update/show';
+export const API_UPDATE_MOVIE_SHOW_AT_HOME = '/movies/update/showAtHome';
+export const API_DELETE_MOVIE = '/movies/delete';
+
 export const API_MOVIES_LIST = '/movies';
 
 //Countries
 
 export const API_COUNTRIES_LIST = '/countries';
+
+//Genres
+
+export const API_GENRES_LIST = '/genres';
+
+//Languages
+
+export const API_LANGUAGES_LIST = '/languages';
+
+//Classifications
+
+export const API_CLASSIFICATIONS_LIST = '/classifications';
+export const API_CLASSIFICATIONS_LIST_SELECT = '/classifications/select';
+
+//Video modes
+
+export const API_VIDEO_MODES_LIST = '/videomodes';
 
 //studios
 
