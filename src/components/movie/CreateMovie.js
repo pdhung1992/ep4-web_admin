@@ -13,6 +13,7 @@ import studioServices from "../../services/studio-services";
 import classificationServices from "../../services/classification-services";
 import videoModeServices from "../../services/video-mode-services";
 import movieServices from "../../services/movie-services";
+import categoryServices from "../../services/category-services";
 
 const CreateMovie = () => {
     const admin = useSelector(state => state.auth);
@@ -177,6 +178,12 @@ const CreateMovie = () => {
         setClassifications(res);
     }
 
+    const [categories, setCategories] = useState([]);
+    const fetchCategories = async () => {
+        const res = await categoryServices.getAllCategoriesSelect();
+        setCategories(res);
+    }
+
     const [videoModes, setVideoModes] = useState([]);
     const fetchVideoModes = async () => {
         const res = await videoModeServices.getVideoModes();
@@ -191,6 +198,7 @@ const CreateMovie = () => {
         fetchCountries();
         fetchStudios();
         fetchClassifications();
+        fetchCategories();
         fetchVideoModes();
     }, []);
 
@@ -260,6 +268,7 @@ const CreateMovie = () => {
         studioId: '',
         videoModeId: '',
         classificationId: '',
+        categoryId: '',
         isShow: false,
         isShowAtHome: false
     }
@@ -294,6 +303,7 @@ const CreateMovie = () => {
         formData.append('studioId', newMovie.studioId);
         formData.append('videoModeId', newMovie.videoModeId);
         formData.append('classificationId', newMovie.classificationId);
+        formData.append('categoryId', newMovie.categoryId);
         formData.append('isShow', isShow);
         formData.append('isShowAtHome', isShowAtHome);
 
@@ -471,7 +481,7 @@ const CreateMovie = () => {
                                             ))}
                                         </select>
                                     </div>
-                                    <div className="col-md-6 mb-3">
+                                    <div className="col-md-4 mb-3">
                                         <label htmlFor="classificationIdInput"
                                                className="form-label">Classification</label>
                                         <select
@@ -488,7 +498,24 @@ const CreateMovie = () => {
                                             ))}
                                         </select>
                                     </div>
-                                    <div className="col-md-6 mb-3">
+                                    <div className="col-md-4 mb-3">
+                                        <label htmlFor="categoryIdInput"
+                                               className="form-label">Category</label>
+                                        <select
+                                            className="form-select"
+                                            id={'categoryIdInput'}
+                                            name={'categoryId'}
+                                            value={newMovie.categoryId}
+                                            onChange={onChangeMovie}
+                                        >
+                                            <option value="">Select a Category</option>
+                                            {Array.isArray(categories) && categories.map((cat) => (
+                                                <option key={cat.id}
+                                                        value={cat.id}>{cat.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="col-md-4 mb-3">
                                         <label htmlFor="videoModeInput" className="form-label">Video Quality</label>
                                         <select
                                             className="form-select"

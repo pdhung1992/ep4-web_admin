@@ -81,6 +81,11 @@ export const API_LANGUAGES_LIST = '/languages';
 export const API_CLASSIFICATIONS_LIST = '/classifications';
 export const API_CLASSIFICATIONS_LIST_SELECT = '/classifications/select';
 
+//Categories
+
+export const API_CATEGORIES_LIST = '/categories';
+export const API_CATEGORIES_LIST_SELECT = '/categories/select';
+
 //Video modes
 
 export const API_VIDEO_MODES_LIST = '/videomodes';

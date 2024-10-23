@@ -103,7 +103,8 @@ const MovieDetails = () => {
                                     <h5 className={'text-info'}>Original title: {movie.originalTitle}</h5>
                                     <strong>Views: {movie.views}</strong><br/>
                                     <strong>Package: {movie.packageName}</strong><br/>
-                                    {movie.canRent && movie.price !== null ? <strong>Can rent with price: $ {movie.price}</strong> : ''}
+                                    {movie.canRent && movie.price !== null ?
+                                        <strong>Can rent with price: $ {movie.price}</strong> : ''}
                                     <hr/>
                                     <div className="row">
                                         <div className="col-md-4">
@@ -155,6 +156,14 @@ const MovieDetails = () => {
                                         </div>
                                         <div className="col-md-8">
                                             <p>{movie.classification}</p>
+                                        </div>
+                                    </div>
+                                    <div className="row">
+                                        <div className="col-md-4">
+                                            <p>Category</p>
+                                        </div>
+                                        <div className="col-md-8">
+                                            <p>{movie.category}</p>
                                         </div>
                                     </div>
                                     <div className="row">
