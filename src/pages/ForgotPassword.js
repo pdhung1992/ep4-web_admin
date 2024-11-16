@@ -45,7 +45,6 @@ const ForgotPassword = () => {
             setResponseType('success');
         } else {
             await setMessage(res.message);
-            console.log(res.message);
             setResponseType('danger');
         }
     }

@@ -13,13 +13,14 @@ import {
     CREATE_MOVIE,
     FUNCTIONS_LIST, MOVIE_DETAILS,
     MOVIES_LIST, PACKAGES_LIST,
-    ROLES_LIST, STUDIO_LIST
+    ROLES_LIST, STUDIO_LIST, USERS_LIST
 } from "../constants/constants";
 import Movies from "../components/movie/Movies";
 import CreateMovie from "../components/movie/CreateMovie";
 import StudiosManagement from "../components/movie/StudiosManagement";
 import Packages from "../components/Packages";
 import MovieDetails from "../components/movie/MovieDetails";
+import Users from "../components/Users";
 
 
 const AdminLayout = () => {
@@ -46,6 +47,8 @@ const AdminLayout = () => {
         dispatch({type: 'LOGOUT'});
         navigate('/login');
     }
+
+    console.log(functions)
 
     return (
         <div>
@@ -261,6 +264,7 @@ const AdminLayout = () => {
                                     <Route path={`${MOVIE_DETAILS}/:slug`} element={<MovieDetails />} />
                                     <Route path={STUDIO_LIST} element={<StudiosManagement/>}/>
                                     <Route path={PACKAGES_LIST} element={<Packages/>}/>
+                                    <Route path={USERS_LIST} element={<Users/>}/>
                                 </Routes>
                             {/* / Content */}
                         </div>

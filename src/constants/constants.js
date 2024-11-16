@@ -20,6 +20,16 @@ export const API_CREATE_ACCOUNT = '/accounts/create';
 export const API_UPDATE_ACCOUNT = '/accounts/update';
 export const API_DELETE_ACCOUNT = '/accounts/delete';
 
+//Users
+export const USERS_LIST = '/users-management/user-list';
+export const CREATE_USER = '/users-management/create-user';
+export const USER_DETAILS = '/users-management/user-details';
+export const UPDATE_USER = '/users-management/update-user';
+export const DELETE_USER = '/users-management/delete-user';
+
+export const API_USERS_LIST = '/users/admin/all-users';
+export const API_BLOCK_USER = '/users/admin/block-user';
+export const API_UNBLOCK_USER = '/users/admin/unblock-user';
 
 //Roles
 export const ROLES_LIST = '/roles-management/roles-list';
@@ -46,6 +56,7 @@ export const DEFAULT_POSTER = '/assets/img/demo/default_poster.png';
 export const DEFAULT_AVATAR = '/assets/img/demo/default_avatar.png';
 export const DEFAULT_UPLOAD_LOGO = '/assets/img/demo/upload_photo_default.png';
 export const DEFAULT_UPLOAD_BANNER = '/assets/img/demo/upload_banner_default.png';
+export const DEFAULT_UPLOAD_IMAGE = '/assets/img/demo/default_image.png';
 
 //MOVIES
 export const MOVIES_LIST = '/movies-management/movies-list';

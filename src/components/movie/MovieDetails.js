@@ -187,7 +187,7 @@ const MovieDetails = () => {
                                             <p>Story line</p>
                                         </div>
                                         <div className="col-md-8">
-                                            <p>{movie.storyLine}</p>
+                                            <p style={{whiteSpace: 'normal', overflowWrap : 'break-word', maxWidth : '100%', textAlign : 'justify'}}>{movie.storyLine}</p>
                                         </div>
                                     </div>
                                 </div>

@@ -1,6 +1,6 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {DEFAULT_POSTER, IMAGE_URL, MOVIES_LIST} from "../../constants/constants";
+import {DEFAULT_POSTER, DEFAULT_UPLOAD_IMAGE, IMAGE_URL, MOVIES_LIST} from "../../constants/constants";
 import {useEffect, useRef, useState} from "react";
 import crewService from "../../services/crew-service";
 import packageService from "../../services/package-services";
@@ -62,6 +62,21 @@ const CreateMovie = () => {
             setPreviewPoster(defaultPoster);
         }
     };
+
+    const defaultImage = DEFAULT_UPLOAD_IMAGE;
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [previewImage, setPreviewImage] = useState(defaultImage);
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file){
+            setSelectedImage(file);
+            setPreviewImage(URL.createObjectURL(file));
+        } else {
+            setSelectedImage(null);
+            setPreviewImage(defaultImage);
+        }
+    }
 
     const [trailerLink, setTrailerLink] = useState('');
     const [trailerId, setTrailerId] = useState(null);
@@ -295,6 +310,9 @@ const CreateMovie = () => {
         formData.append('storyline', newMovie.storyline);
         if (selectedPoster !== null) {
             formData.append('poster', selectedPoster);
+        }
+        if (selectedImage !== null) {
+            formData.append('image', selectedImage);
         }
         formData.append('trailer', trailerLink);
         formData.append('duration', newMovie.duration);
@@ -791,6 +809,22 @@ const CreateMovie = () => {
                                     type="file"
                                     accept="image/*"
                                     onChange={handlePosterChange}
+                                    className="form-control"
+                                />
+                            </div>
+                        </div>
+                        <br/>
+                        <div className="card">
+                            <div className="card-header pb-0">
+                                <h5>Upload movie's image</h5>
+                            </div>
+                            <div className="card-body">
+                                <img src={previewImage} height={'auto'} alt=""
+                                     className={'img-fluid mb-3'}/>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
                                     className="form-control"
                                 />
                             </div>

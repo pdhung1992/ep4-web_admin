@@ -3,9 +3,11 @@ import './App.css';
 import {Navigate, Route, Routes} from "react-router-dom";
 import AdminLayout from "./layouts/AdminLayout";
 import Login from "./pages/Login";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import {useEffect} from "react";
+import {LOGIN_SUCCESS} from "./actions/actionTypes";
 
 const PrivateRoute = ({element, roles}) => {
     const admin = useSelector(state => state.auth);
@@ -16,7 +18,7 @@ const PrivateRoute = ({element, roles}) => {
 }
 
 function App() {
-  return (
+    return (
     <div>
       <Routes>
         <Route path={'/*'} element={<PrivateRoute element={<AdminLayout/>}/>}/>

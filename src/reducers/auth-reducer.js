@@ -13,12 +13,6 @@ const authReducer = (state = initialState, action) => {
                 isLoggedIn: true,
                 adminData: action.payload.adminData
             };
-        case LOGIN_FAIL:
-            return {
-                ...state,
-                isLoggedIn: false,
-                adminData: null
-            };
         case LOGOUT:
             return {
                 ...state,
@@ -27,6 +21,7 @@ const authReducer = (state = initialState, action) => {
             }
         case CHANGE_AVATAR:
             return {
+                ...state,
                 adminData: {
                     ...state.adminData,
                     avatar: action.payload.avatar,

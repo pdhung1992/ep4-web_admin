@@ -1,12 +1,10 @@
 
 import apiServices from "./api-service";
 import {
-    ACCOUNTS_LIST,
     API_ACCOUNTS_LIST,
-    API_CREATE_ACCOUNT, API_DELETE_ACCOUNT, API_UPDATE_ACCOUNT,
-    CREATE_ACCOUNT,
-    DELETE_ACCOUNT,
-    UPDATE_ACCOUNT
+    API_CREATE_ACCOUNT,
+    API_DELETE_ACCOUNT,
+    API_UPDATE_ACCOUNT,
 } from "../constants/constants";
 
 const getAccountsList = async (pageNo, pageSize, sortField, sortDir, username, fullName, email, roleId, axiosConfig) => {
