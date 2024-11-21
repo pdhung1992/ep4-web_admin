@@ -244,19 +244,19 @@ const ForgotPassword = () => {
                 data-bs-target="#alertModal">
             showAlert
         </button>
-        <Helmet>
-            <script type="text/javascript" src="/assets/vendor/js/helpers.js" defer></script>
-            <script type="text/javascript" src="/assets/js/config.js" defer></script>
-            <script type="text/javascript" src="/assets/vendor/libs/jquery/jquery.js" defer></script>
-            <script type="text/javascript" src="/assets/vendor/libs/popper/popper.js" defer></script>
-            <script type="text/javascript" src="/assets/vendor/js/bootstrap.js" defer></script>
-            <script type="text/javascript" src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"
-                    defer></script>
-            <script type="text/javascript" src="/assets/vendor/js/menu.js" defer></script>
-            <script type="text/javascript" src="/assets/vendor/libs/apex-charts/apexcharts.js" defer></script>
-            <script type="text/javascript" src="/assets/js/main.js" defer></script>
-            <script async defer src="https://buttons.github.io/buttons.js"></script>
-        </Helmet>
+        {/*<Helmet>*/}
+        {/*    <script type="text/javascript" src="/assets/vendor/js/helpers.js" defer></script>*/}
+        {/*    <script type="text/javascript" src="/assets/js/config.js" defer></script>*/}
+        {/*    <script type="text/javascript" src="/assets/vendor/libs/jquery/jquery.js" defer></script>*/}
+        {/*    <script type="text/javascript" src="/assets/vendor/libs/popper/popper.js" defer></script>*/}
+        {/*    <script type="text/javascript" src="/assets/vendor/js/bootstrap.js" defer></script>*/}
+        {/*    <script type="text/javascript" src="/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"*/}
+        {/*            defer></script>*/}
+        {/*    <script type="text/javascript" src="/assets/vendor/js/menu.js" defer></script>*/}
+        {/*    <script type="text/javascript" src="/assets/vendor/libs/apex-charts/apexcharts.js" defer></script>*/}
+        {/*    <script type="text/javascript" src="/assets/js/main.js" defer></script>*/}
+        {/*    <script async defer src="https://buttons.github.io/buttons.js"></script>*/}
+        {/*</Helmet>*/}
         </body>
         </html>
 
