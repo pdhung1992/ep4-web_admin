@@ -99,10 +99,15 @@ var menu, animate;
   }
 
   function initializeHelpers() {
-    window.Helpers.setAutoUpdate(true);
-    window.Helpers.initPasswordToggle();
-    window.Helpers.initSpeechToText();
+    if (window.Helpers) {
+      window.Helpers.setAutoUpdate(true);
+      window.Helpers.initPasswordToggle();
+      window.Helpers.initSpeechToText();
+    } else {
+      console.error('Helpers is not defined on window.');
+    }
   }
+
 
   // Hàm quản lý menu collapse/expand
   function manageMenuCollapse() {

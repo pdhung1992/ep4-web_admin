@@ -121,6 +121,14 @@ export const API_CREATE_PACKAGE = '/packages/create';
 export const API_UPDATE_PACKAGE = '/packages/update';
 export const API_DELETE_PACKAGE = '/packages/delete';
 
+//Reports
+export const REVENUE_REPORT = '/reports/revenue-report';
+
+export const TRANSACTIONS_REPORT_TABLE_API = '/reports/revenue/transactions';
+export const REVENUE_STATISTICS_REPORT_API = '/reports/revenue/statistics';
+export const DASHBOARD_STATISTICS_REPORT_API = '/reports/dashboard/statistics';
+
+
 //Bs Colors
 export const BS_COLORS = [
     'primary',
