@@ -2,7 +2,7 @@ import ReactOdometer from "react-odometerjs";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {IMAGE_URL} from "../constants/constants";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import reportServices from "../services/report-service";
 import {format} from "date-fns";
 
@@ -31,6 +31,22 @@ const RevenueReport = () => {
     const [pkg, setPkg] = useState(0);
     const [packagePercentage, setPackagePercentage] = useState(0);
 
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('');
+    const closeToast = useRef(null);
+    const [toastType, setToastType] = useState('');
+    useEffect(() => {
+        if (showToast) {
+            const timer = setTimeout(() => {
+                if (closeToast.current) {
+                    closeToast.current.click();
+                }
+                setShowToast(false);
+                setToastType('');
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [showToast]);
 
 
     //Table
@@ -114,6 +130,15 @@ const RevenueReport = () => {
             clearTimeout(timeoutIdPackagePercentage);
         };
     }, [month,statistics]);
+
+    const handleExport = async () => {
+        const res = await reportServices.exportTransactions(month, axiosConfig);
+        if (res){
+            setToastType('success');
+            setToastMessage(res);
+            setShowToast(true);
+        }
+    }
 
   return (
       <div className={'content-wrapper'}>
@@ -284,7 +309,7 @@ const RevenueReport = () => {
                                       </select>
                                   </div>
                                   <div className="col-auto">
-                                      <button className="btn btn-success "><span
+                                      <button className="btn btn-success" onClick={handleExport}><span
                                           className="tf-icons bx bx-spreadsheet"></span>&nbsp; Export to excel
                                       </button>
                                   </div>
@@ -368,6 +393,25 @@ const RevenueReport = () => {
                           </div>
                       </div>
                   </div>
+              </div>
+          </div>
+
+          {/*Alert toast*/}
+          <div
+              className={`bs-toast toast toast-placement-ex m-3 fade bg-${toastType} top-0 end-0 ${showToast ? 'show' : ''}`}
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+              data-bs-delay="3000"
+          >
+              <div className="toast-header">
+                  <i className="bx bx-bell me-2"></i>
+                  <div className="me-auto fw-semibold">Alert</div>
+                  <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"
+                          ref={closeToast}></button>
+              </div>
+              <div className="toast-body">
+                  {toastMessage}
               </div>
           </div>
       </div>

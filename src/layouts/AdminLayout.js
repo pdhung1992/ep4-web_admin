@@ -9,11 +9,11 @@ import Functions from "../components/Functions";
 import {useEffect, useState} from "react";
 import {
     ACCOUNT_SETTINGS,
-    ACCOUNTS_LIST,
+    ACCOUNTS_LIST, API_UPDATE_MOVIE,
     CREATE_MOVIE,
     FUNCTIONS_LIST, MOVIE_DETAILS,
     MOVIES_LIST, PACKAGES_LIST, REVENUE_REPORT,
-    ROLES_LIST, STUDIO_LIST, USERS_LIST
+    ROLES_LIST, STUDIO_LIST, UPDATE_MOVIE, USERS_LIST
 } from "../constants/constants";
 import Movies from "../components/movie/Movies";
 import CreateMovie from "../components/movie/CreateMovie";
@@ -22,6 +22,7 @@ import Packages from "../components/Packages";
 import MovieDetails from "../components/movie/MovieDetails";
 import Users from "../components/Users";
 import RevenueReport from "../components/RevenueReport";
+import EditMovie from "../components/movie/EditMovie";
 
 
 const AdminLayout = () => {
@@ -262,6 +263,7 @@ const AdminLayout = () => {
                                     <Route path={FUNCTIONS_LIST} element={<Functions/>}/>
                                     <Route path={MOVIES_LIST} element={<Movies/>}/>
                                     <Route path={CREATE_MOVIE} element={<CreateMovie/>}/>
+                                    <Route path={`${UPDATE_MOVIE}/:movieId`} element={<EditMovie/>}/>
                                     <Route path={`${MOVIE_DETAILS}/:slug`} element={<MovieDetails />} />
                                     <Route path={STUDIO_LIST} element={<StudiosManagement/>}/>
                                     <Route path={PACKAGES_LIST} element={<Packages/>}/>

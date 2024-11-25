@@ -1,6 +1,4 @@
-import {useDispatch, useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
-import {IMAGE_URL} from "../constants/constants";
+import {useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import ReactOdometer from "react-odometerjs";
 import "odometer/themes/odometer-theme-default.css";
@@ -10,9 +8,6 @@ import reportServices from "../services/report-service";
 
 const DashBoard = () => {
     const admin = useSelector(state => state.auth.adminData);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const imgUrl = IMAGE_URL;
 
     const token = admin.token;
     const axiosConfig = {
@@ -51,12 +46,16 @@ const DashBoard = () => {
         setStatistics(res);
     }
 
+    const [revenueData, setRevenueData] = useState([]);
+    const fetchRevenueData = async () => {
+        const res = await reportServices.getRevenueByDays(selectedMonth, axiosConfig);
+        setRevenueData(res);
+    }
+
     useEffect(() => {
         fetchStatistics();
+        fetchRevenueData()
     }, [selectedMonth]);
-
-    console.log(statistics)
-
 
     //Odometer
     const [view, setView] = useState(0);
@@ -91,32 +90,6 @@ const DashBoard = () => {
     }, [selectedMonth, statistics]);
 
     //Chart
-
-    //fake data
-    const fakeData = [
-        {revenueDate: '2024-11-01', revenue: 200, transaction: 10},
-        {revenueDate: '2024-11-02', revenue: 100, transaction: 8},
-        {revenueDate: '2024-11-03', revenue: 400, transaction: 46},
-        {revenueDate: '2024-11-04', revenue: 200, transaction: 12},
-        {revenueDate: '2024-11-05', revenue: 500, transaction: 60},
-        {revenueDate: '2024-11-06', revenue: 100, transaction: 11},
-        {revenueDate: '2024-11-07', revenue: 700, transaction: 66},
-        {revenueDate: '2024-11-08', revenue: 300, transaction: 23},
-        {revenueDate: '2024-11-09', revenue: 600, transaction: 71},
-        {revenueDate: '2024-11-10', revenue: 1000, transaction: 112},
-        {revenueDate: '2024-11-11', revenue: 360, transaction: 41},
-        {revenueDate: '2024-11-12', revenue: 888, transaction: 92},
-        {revenueDate: '2024-11-13', revenue: 222, transaction: 19},
-        {revenueDate: '2024-11-14', revenue: 1500, transaction: 161},
-        {revenueDate: '2024-11-15', revenue: 700, transaction: 77},
-        {revenueDate: '2024-11-16', revenue: 1000, transaction: 102},
-        {revenueDate: '2024-11-17', revenue: 1310, transaction: 1234},
-        {revenueDate: '2024-11-18', revenue: 600, transaction: 59},
-        {revenueDate: '2024-11-19', revenue: 200, transaction: 18},
-        {revenueDate: '2024-11-20', revenue: 900, transaction: 88},
-        {revenueDate: '2024-11-21', revenue: 1200, transaction: 111}
-    ];
-
     const [year, setYear] = useState(new Date().getFullYear());
     const [month, setMonth] = useState(new Date().getMonth() + 1);
 
@@ -140,22 +113,24 @@ const DashBoard = () => {
         }
         return dates;
     };
-    const allDates = getDatesForMonth(year, month);
 
-    const [revenueData, setRevenueData] = useState(fakeData);
+    const [allDates, setAllDates] = useState([]);
+    useEffect(() => {
+        setAllDates(getDatesForMonth(year, month));
+    },[selectedMonth, year, month]);
 
     const counts = allDates.map((date) => {
         const Revenue = Array.isArray(revenueData)
             ? revenueData.reduce((acc, item) => {
-                const itemDate = getDateString(item.revenueDate);
+                const itemDate = getDateString(item.date);
                 return itemDate === date ? acc + item.revenue : acc;
             }, 0)
             : 0;
 
         const Transactions = Array.isArray(revenueData)
             ? revenueData.reduce((acc, item) => {
-                const itemDate = getDateString(item.revenueDate);
-                return itemDate === date ? acc + item.transaction : acc;
+                const itemDate = getDateString(item.date);
+                return itemDate === date ? acc + item.transactions : acc;
             }, 0)
             : 0;
         return {

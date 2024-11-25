@@ -1,6 +1,6 @@
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {Link, useNavigate} from "react-router-dom";
-import {CREATE_MOVIE, IMAGE_URL, MOVIE_DETAILS} from "../../constants/constants";
+import {CREATE_MOVIE, IMAGE_URL, MOVIE_DETAILS, UPDATE_MOVIE} from "../../constants/constants";
 import {useEffect, useRef, useState} from "react";
 import movieServices from "../../services/movie-services";
 import packageService from "../../services/package-services";
@@ -11,12 +11,9 @@ import studioServices from "../../services/studio-services";
 import classificationServices from "../../services/classification-services";
 import videoModeServices from "../../services/video-mode-services";
 
-
 const Movies = () => {
     const admin = useSelector(state => state.auth);
-    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const imgUrl = IMAGE_URL;
 
     const token = admin.adminData.token;
     const axiosConfig = {
@@ -191,6 +188,28 @@ const Movies = () => {
         }
     }
 
+    const handleEditMovie = (movie) => {
+        navigate(`${UPDATE_MOVIE}/${movie.id}`);
+    }
+
+    const [deleteMovie, setDeleteMovie] = useState({});
+    const handleDeleteMovie = async () => {
+        const data = await movieServices.deleteMovie(deleteMovie.id, axiosConfig);
+        if (data && data.responseCode === 200) {
+            setToastType('success');
+            setToastMessage(data.responseMessage);
+            setShowToast(true);
+            fetchMovies();
+        } else {
+            setToastType('danger');
+            setToastMessage(data.responseMessage);
+            setShowToast(true);
+        }
+        if (closeDeleteModal.current) {
+            closeDeleteModal.current.click();
+        }
+    }
+
     return (
         <div className={'content-wrapper'}>
             <div className={'container-xxl flex-grow-1 container-p-y'}>
@@ -301,20 +320,16 @@ const Movies = () => {
                                                         <i className="bx bx-detail me-1"></i> View {movie.title} details
                                                     </button>
                                                     <button className="dropdown-item"
-                                                            // data-bs-toggle="modal"
-                                                            // data-bs-target="#editModal"
-                                                            // onClick={() => {
-                                                            //     setEditStudio(stu);
-                                                            // }}
+                                                            onClick={() => handleEditMovie(movie)}
                                                     >
                                                         <i className="bx bx-edit-alt me-1"></i> Edit Movie: {movie.title}
                                                     </button>
                                                     <button className="dropdown-item"
-                                                            // data-bs-toggle="modal"
-                                                            // data-bs-target="#deleteModal"
-                                                            // onClick={() => {
-                                                            //     setDeleteStudio(stu);
-                                                            // }}
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#deleteModal"
+                                                            onClick={() => {
+                                                                setDeleteMovie(movie);
+                                                            }}
                                                     >
                                                         <i className="bx bx-trash me-1"></i> Delete {movie.title}
                                                     </button>
@@ -378,38 +393,38 @@ const Movies = () => {
                 </div>
             </div>
 
-            {/*/!*Delete Modal*!/*/}
-            {/*<div className="modal fade" id="deleteModal" tabIndex="-1" aria-hidden="true">*/}
-            {/*    <div className="modal-dialog modal-dialog-centered" role="document">*/}
-            {/*        <div className="modal-content">*/}
-            {/*            <div className="modal-header">*/}
-            {/*                <h4 className="modal-title text-primary">Delete account: <span*/}
-            {/*                    className={'text-danger'}>{deleteRole.name}</span></h4>*/}
-            {/*                <button*/}
-            {/*                    type="button"*/}
-            {/*                    className="btn-close"*/}
-            {/*                    data-bs-dismiss="modal"*/}
-            {/*                    aria-label="Close"*/}
-            {/*                ></button>*/}
-            {/*            </div>*/}
-            {/*            <div className="modal-body">*/}
-            {/*                <strong>This role will be removed from roles list. Are you sure?</strong>*/}
-            {/*            </div>*/}
-            {/*            <div className="modal-footer">*/}
-            {/*                <button type="submit"*/}
-            {/*                        className="btn btn-outline-danger"*/}
-            {/*                        onClick={handleDeleteRole}*/}
-            {/*                >*/}
-            {/*                    <span className="tf-icons bx bxs-trash"></span>&nbsp; Delete*/}
-            {/*                </button>*/}
-            {/*                <button type="button" className="btn btn-outline-secondary" data-bs-dismiss="modal"*/}
-            {/*                        ref={closeDeleteModal}>*/}
-            {/*                    <span className="tf-icons bx bx-x"></span>&nbsp; Cancel*/}
-            {/*                </button>*/}
-            {/*            </div>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
+            {/*Delete Modal*/}
+            <div className="modal fade" id="deleteModal" tabIndex="-1" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered" role="document">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h4 className="modal-title text-primary">Delete movie: <span
+                                className={'text-danger'}>{deleteMovie.title}</span></h4>
+                            <button
+                                type="button"
+                                className="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                            ></button>
+                        </div>
+                        <div className="modal-body">
+                            <strong>This movie will be removed from movies list. Are you sure?</strong>
+                        </div>
+                        <div className="modal-footer">
+                            <button type="submit"
+                                    className="btn btn-outline-danger"
+                                    onClick={handleDeleteMovie}
+                            >
+                                <span className="tf-icons bx bxs-trash"></span>&nbsp; Delete
+                            </button>
+                            <button type="button" className="btn btn-outline-secondary" data-bs-dismiss="modal"
+                                    ref={closeDeleteModal}>
+                                <span className="tf-icons bx bx-x"></span>&nbsp; Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {/*Filters Offcanvas*/}
             <div

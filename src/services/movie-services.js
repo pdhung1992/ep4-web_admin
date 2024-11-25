@@ -1,5 +1,5 @@
 import {
-    API_CREATE_MOVIE, API_MOVIE_DETAILS,
+    API_CREATE_MOVIE, API_DELETE_MOVIE, API_MOVIE_DETAILS,
     API_MOVIES_LIST,
     API_UPDATE_MOVIE,
     API_UPDATE_MOVIE_SHOW,
@@ -58,7 +58,7 @@ const createMovie = async (formData, axiosConfig) => {
 
 const updateMovie = async (formData, axiosConfig) => {
     try {
-        const url = API_UPDATE_MOVIE;
+        const url = `${API_UPDATE_MOVIE}`;
         const res = await apiServices.put(url, formData, axiosConfig);
         return res.data;
     }catch (error){
@@ -104,13 +104,30 @@ const updateMovieShowAtHome = async (formData, axiosConfig) => {
     }
 }
 
+const deleteMovie = async (id, axiosConfig) => {
+    try {
+        const url = `${API_DELETE_MOVIE}/${id}`;
+        const res = await apiServices.delete(url, axiosConfig);
+        return res.data;
+    }catch (error){
+        if (error.response) {
+            return error.response.data;
+        } else if (error.request) {
+            return 'No response from server';
+        } else {
+            return 'An error occurred';
+        }
+    }
+}
+
 const movieServices = {
     createMovie,
     getAdminMoviesList,
     getMovieDetails,
     updateMovie,
     updateMovieShow,
-    updateMovieShowAtHome
+    updateMovieShowAtHome,
+    deleteMovie
 }
 
 export default movieServices;

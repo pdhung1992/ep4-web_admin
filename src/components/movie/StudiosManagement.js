@@ -391,12 +391,12 @@ const StudiosManagement = () => {
                             <hr/>
                             <div className={'row'}>
                                 <div className="col">
-                                    <strong>Showing {movies.fromItem} to {movies.toItem} of {movies.totalItems} entries</strong>
+                                    <strong>Showing {studios.fromItem} to {studios.toItem} of {studios.totalItems} entries</strong>
                                 </div>
                                 <div className="col">
                                     <nav aria-label="Page navigation">
                                         <ul className="pagination pagination-sm justify-content-end">
-                                            {movies.currentPage > 1 ? (
+                                            {studios.currentPage > 1 ? (
                                                 <li className="page-item">
                                                     <button className="page-link" onClick={() => {
                                                         setPageNo(pageNo - 1)
@@ -419,7 +419,7 @@ const StudiosManagement = () => {
                                                     )}
                                                 </div>
                                             )) : ([])}
-                                            {movies.currentPage < movies.totalPages ? (
+                                            {studios.currentPage < studios.totalPages ? (
                                                 <li className="page-item">
                                                     <button className="page-link" onClick={() => {
                                                         setPageNo(pageNo + 1)

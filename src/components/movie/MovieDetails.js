@@ -2,7 +2,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import movieServices from "../../services/movie-services";
 import {useDispatch, useSelector} from "react-redux";
-import {IMAGE_URL} from "../../constants/constants";
+import {API_UPDATE_MOVIE, IMAGE_URL, UPDATE_MOVIE} from "../../constants/constants";
 
 
 const MovieDetails = () => {
@@ -28,6 +28,7 @@ const MovieDetails = () => {
         setMovie(res);
         setTrailerLink(res.trailer);
     };
+
     useEffect(() => {
         fetchMovie();
     },[]);
@@ -48,8 +49,6 @@ const MovieDetails = () => {
             setTrailerId(null);
         }
     }, [trailerLink]);
-
-    console.log(movie);
 
     return (
         <div className={'content-wrapper'}>
@@ -82,21 +81,21 @@ const MovieDetails = () => {
                                             </div>
                                         </div>
                                     )}
-                                    <h5>Others:</h5>
-                                    <div className={'row'}>
-                                        <div className="col-md-6 mb-3">
-                                            <button className={'btn btn-warning w-100'}><span className="tf-icons bx bx-film"></span>&nbsp; Movie files</button>
-                                        </div>
-                                        <div className="col-md-6 mb-3">
-                                            <button className={'btn btn-success w-100'}><span className="tf-icons bx bx-message-square-dots"></span>&nbsp; Movie reactions</button>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <button className={'btn btn-danger w-100'}><span className="tf-icons bx bx-star"></span>&nbsp; Casts</button>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <button className={'btn btn-secondary w-100'}><span className="tf-icons bx bx-group"></span>&nbsp; Crew</button>
-                                        </div>
-                                    </div>
+                                    {/*<h5>Others:</h5>*/}
+                                    {/*<div className={'row'}>*/}
+                                    {/*    <div className="col-md-6 mb-3">*/}
+                                    {/*        <button className={'btn btn-warning w-100'}><span className="tf-icons bx bx-film"></span>&nbsp; Movie files</button>*/}
+                                    {/*    </div>*/}
+                                    {/*    <div className="col-md-6 mb-3">*/}
+                                    {/*        <button className={'btn btn-success w-100'}><span className="tf-icons bx bx-message-square-dots"></span>&nbsp; Movie reactions</button>*/}
+                                    {/*    </div>*/}
+                                    {/*    <div className="col-md-6">*/}
+                                    {/*        <button className={'btn btn-danger w-100'}><span className="tf-icons bx bx-star"></span>&nbsp; Casts</button>*/}
+                                    {/*    </div>*/}
+                                    {/*    <div className="col-md-6">*/}
+                                    {/*        <button className={'btn btn-secondary w-100'}><span className="tf-icons bx bx-group"></span>&nbsp; Crew</button>*/}
+                                    {/*    </div>*/}
+                                    {/*</div>*/}
                                 </div>
                                 <div className="col-md-8">
                                     <h2 className={'text-primary'}>{movie.title}</h2>
@@ -136,7 +135,9 @@ const MovieDetails = () => {
                                                 <p>Genre(s)</p>
                                             </div>
                                             <div className="col-md-8">
-                                                <p>{movie.genres.join(', ')}</p>
+                                                <p>
+                                                    {movie.genres.map((genre) => genre.name).join(', ')}
+                                                </p>
                                             </div>
                                         </div>
                                     ) : ''}
@@ -195,6 +196,7 @@ const MovieDetails = () => {
                         </div>
                     </div>
                     <div className="card-footer text-end">
+                        <button className={'btn btn-warning mx-3'} onClick={() => navigate(`${UPDATE_MOVIE}/${movie.id}`)}>Edit</button>
                         <button className={'btn btn-primary'} onClick={() => navigate(-1)}>Back</button>
                     </div>
                 </div>

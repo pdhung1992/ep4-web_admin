@@ -125,9 +125,10 @@ export const API_DELETE_PACKAGE = '/packages/delete';
 export const REVENUE_REPORT = '/reports/revenue-report';
 
 export const TRANSACTIONS_REPORT_TABLE_API = '/reports/revenue/transactions';
+export const TRANSACTION_EXPORT_API = '/reports/revenue/export';
 export const REVENUE_STATISTICS_REPORT_API = '/reports/revenue/statistics';
 export const DASHBOARD_STATISTICS_REPORT_API = '/reports/dashboard/statistics';
-
+export const REVENUE_BY_DAYS_REPORT_API = '/reports/dashboard/revenue';
 
 //Bs Colors
 export const BS_COLORS = [
@@ -139,3 +140,6 @@ export const BS_COLORS = [
     'info',
     'dark'
 ];
+
+//Slugs
+export const CHECK_AND_CREATE_SLUG_API = '/common/slug';

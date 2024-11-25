@@ -1,24 +1,25 @@
-import {useDispatch, useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {useNavigate, useParams} from "react-router-dom";
 import {DEFAULT_POSTER, DEFAULT_UPLOAD_IMAGE, IMAGE_URL, MOVIES_LIST} from "../../constants/constants";
+import makeAnimated from "react-select/animated";
 import {useEffect, useRef, useState} from "react";
+import movieServices from "../../services/movie-services";
+import countryServices from "../../services/country-services";
+import studioServices from "../../services/studio-services";
+import classificationServices from "../../services/classification-services";
+import categoryServices from "../../services/category-services";
+import videoModeServices from "../../services/video-mode-services";
+import Select from "react-select";
 import crewService from "../../services/crew-service";
 import packageService from "../../services/package-services";
 import languageServices from "../../services/language-services";
 import genreServices from "../../services/genre-services";
-import Select from "react-select";
-import makeAnimated from 'react-select/animated';
-import countryServices from "../../services/country-services";
-import studioServices from "../../services/studio-services";
-import classificationServices from "../../services/classification-services";
-import videoModeServices from "../../services/video-mode-services";
-import movieServices from "../../services/movie-services";
-import categoryServices from "../../services/category-services";
-import commonServices from "../../services/common-services";
 
-const CreateMovie = () => {
+
+const EditMovie = () => {
     const admin = useSelector(state => state.auth);
     const navigate = useNavigate();
+    const imgUrl = IMAGE_URL;
 
     const token = admin.adminData.token;
     const axiosConfig = {
@@ -27,6 +28,8 @@ const CreateMovie = () => {
         },
         credentials: "true"
     }
+
+    const {movieId} = useParams();
 
     const animatedComponents = makeAnimated();
 
@@ -47,9 +50,175 @@ const CreateMovie = () => {
         }
     }, [showToast]);
 
-    const defaultPoster = DEFAULT_POSTER;
+    const [movie, setMovie] = useState({});
+    const fetchMovie = async () => {
+        const res = await movieServices.getMovieDetails(movieId, axiosConfig);
+        setMovie(res);
+        console.log(res.poster);
+        setDefaultPoster(imgUrl + res.poster);
+    }
+
+    const [countries, setCountries] = useState([]);
+    const fetchCountries = async () => {
+        const res = await countryServices.getCountries();
+        setCountries(res);
+    }
+
+    const [studios, setStudios] = useState([]);
+    const fetchStudios = async () => {
+        const res = await studioServices.getStudiosSelect();
+        setStudios(res);
+    }
+
+    const [classifications, setClassifications] = useState([]);
+    const fetchClassifications = async () => {
+        const res = await classificationServices.getClassificationSelect();
+        setClassifications(res);
+    }
+
+    const [categories, setCategories] = useState([]);
+    const fetchCategories = async () => {
+        const res = await categoryServices.getAllCategoriesSelect();
+        setCategories(res);
+    }
+
+    const [videoModes, setVideoModes] = useState([]);
+    const fetchVideoModes = async () => {
+        const res = await videoModeServices.getVideoModes();
+        setVideoModes(res);
+    }
+
+    const [packageList, setPackageList] = useState([]);
+    const fetchPackages = async () => {
+        const res = await packageService.getPackageSelect();
+        setPackageList(res);
+    }
+
+    const [languages, setLanguages] = useState([]);
+    const fetchLanguages = async () => {
+        const res = await languageServices.getLanguages();
+        setLanguages(res);
+    }
+
+    const [genres, setGenres] = useState([]);
+    const fetchGenres = async () => {
+        const res = await genreServices.getGenres();
+        setGenres(res);
+    }
+
+    useEffect(() => {
+        fetchMovie();
+        fetchCountries();
+        fetchStudios();
+        fetchClassifications();
+        fetchCategories();
+        fetchVideoModes();
+        fetchPackages();
+        fetchLanguages();
+        fetchGenres();
+    },[movieId]);
+
+    const onChangeMovie = (e) => {
+        const {name, value} = e.target;
+        setMovie(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    }
+
+    const genresOptions = genres.map((genre) => ({
+        value: genre.id,
+        label: genre.name,
+    }));
+
+    const [selectedGenres, setSelectedGenres] = useState(() =>
+        Array.isArray(movie.genres)
+            ? movie.genres.map((genre) => ({
+                value: genre.id,
+                label: genre.name,
+            }))
+        : []
+    );
+
+    useEffect(() => {
+        if (Array.isArray(movie.genres)) {
+            const mappedGenres = movie.genres.map((genre) => ({
+                value: genre.id,
+                label: genre.name,
+            }));
+            setSelectedGenres(mappedGenres);
+        }
+    }, [movie.genres]);
+
+    const handleGenreChange = (selectedOptions) => {
+        setSelectedGenres(selectedOptions);
+
+        const updatedGenres = selectedOptions.map((option) => ({
+            id: option.value,
+            name: option.label,
+        }));
+        setMovie((prevState) => ({
+            ...prevState,
+            genres: updatedGenres,
+        }));
+    };
+
+
+    const languageOptions = languages.map((language) => ({
+        value: language.id,
+        label: language.name
+    }));
+
+    const [selectedLanguages, setSelectedLanguages] = useState(() =>
+        Array.isArray(movie.genres)
+            ? movie.genres.map((genre) => ({
+                value: genre.id,
+                label: genre.name,
+            }))
+            : []
+    );
+
+    useEffect(() => {
+        if (Array.isArray(movie.languages)) {
+            const mappedLanguages = movie.languages.map((language) => ({
+                value: language.id,
+                label: language.name
+            }));
+            setSelectedLanguages(mappedLanguages);
+        }
+    }, [movie.languages]);
+
+    const handleLanguageChange = (selectedOptions) => {
+        setSelectedLanguages(selectedOptions);
+
+        const updatedLanguages = selectedOptions.map((option) => ({
+            id: option.value,
+            name: option.label
+        }));
+        setMovie((prevState) => ({
+            ...prevState,
+            languages: updatedLanguages
+        }));
+    }
+
+    const [episodeQty, setEpisodeQty] = useState(1);
+
+    const [canRent, setCanRent] = useState(true);
+
+    const [defaultPoster, setDefaultPoster] = useState(DEFAULT_POSTER);
     const [selectedPoster, setSelectedPoster] = useState(null);
     const [previewPoster, setPreviewPoster] = useState(defaultPoster);
+
+    useEffect(() => {
+        if (movie?.poster) {
+            const newDefaultPoster = `${imgUrl}${movie.poster}`;
+            setDefaultPoster(newDefaultPoster);
+            setPreviewPoster(newDefaultPoster);
+        } else {
+            setDefaultPoster(DEFAULT_POSTER);
+            setPreviewPoster(DEFAULT_POSTER);
+        }
+    }, [movie?.poster]);
 
     const handlePosterChange = (e) => {
         const file = e.target.files[0];
@@ -62,9 +231,20 @@ const CreateMovie = () => {
         }
     };
 
-    const defaultImage = DEFAULT_UPLOAD_IMAGE;
+    const [defaultImage, setDefaultImage] = useState(DEFAULT_UPLOAD_IMAGE);
     const [selectedImage, setSelectedImage] = useState(null);
     const [previewImage, setPreviewImage] = useState(defaultImage);
+
+    useEffect(() => {
+        if (movie?.image) {
+            const newDefaultImage = `${imgUrl}${movie.image}`;
+            setDefaultImage(newDefaultImage);
+            setPreviewImage(newDefaultImage);
+        } else {
+            setDefaultImage(DEFAULT_UPLOAD_IMAGE);
+            setPreviewImage(DEFAULT_UPLOAD_IMAGE);
+        }
+    }, [movie?.image]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -79,6 +259,14 @@ const CreateMovie = () => {
 
     const [trailerLink, setTrailerLink] = useState('');
     const [trailerId, setTrailerId] = useState(null);
+
+    useEffect(() => {
+        if (movie?.trailer) {
+            setTrailerLink(movie.trailer);
+        } else {
+            setTrailerLink('');
+        }
+    }, [movie?.trailer]);
 
     useEffect(() => {
         const extractTrailerId = (url) => {
@@ -98,7 +286,25 @@ const CreateMovie = () => {
         setTrailerLink(e.target.value);
     };
 
-    const [previewEpisodes, setPreviewEpisodes] = useState([]);
+    const [isShow, setIsShow] = useState(true);
+    const [isShowAtHome, setIsShowAtHome] = useState(false);
+
+    const [defaultPreviewEpisodes, setDefaultPreviewEpisodes] = useState([]);
+    const [previewEpisodes, setPreviewEpisodes] = useState(defaultPreviewEpisodes);
+
+    useEffect(() => {
+        if (Array.isArray(movie.files)) {
+            const previews = movie.files.map((episode) => {
+                if (episode.thumbnail) {
+                    return `${imgUrl}${episode.thumbnail}`;
+                }
+                return null;
+            });
+            setDefaultPreviewEpisodes(previews);
+            setPreviewEpisodes(previews);
+        }
+    }, [movie?.files]);
+
     const episodeRefs = useRef([]);
     const [thumbnails, setThumbnails] = useState([]);
 
@@ -150,174 +356,17 @@ const CreateMovie = () => {
         }
     };
 
-    const [crewPositions, setCrewPositions] = useState([]);
-    const fetchCrewPositions = async () => {
-        const res = await crewService.getCrewsPositions();
-        setCrewPositions(res);
-    }
-
-    const [packageList, setPackageList] = useState([]);
-    const fetchPackages = async () => {
-        const res = await packageService.getPackageSelect();
-        setPackageList(res);
-    }
-
-    const [languages, setLanguages] = useState([]);
-    const fetchLanguages = async () => {
-        const res = await languageServices.getLanguages();
-        setLanguages(res);
-    }
-
-    const [genres, setGenres] = useState([]);
-    const fetchGenres = async () => {
-        const res = await genreServices.getGenres();
-        setGenres(res);
-    }
-
-    const [countries, setCountries] = useState([]);
-    const fetchCountries = async () => {
-        const res = await countryServices.getCountries();
-        setCountries(res);
-    }
-
-    const [studios, setStudios] = useState([]);
-    const fetchStudios = async () => {
-        const res = await studioServices.getStudiosSelect();
-        setStudios(res);
-    }
-
-    const [classifications, setClassifications] = useState([]);
-    const fetchClassifications = async () => {
-        const res = await classificationServices.getClassificationSelect();
-        setClassifications(res);
-    }
-
-    const [categories, setCategories] = useState([]);
-    const fetchCategories = async () => {
-        const res = await categoryServices.getAllCategoriesSelect();
-        setCategories(res);
-    }
-
-    const [videoModes, setVideoModes] = useState([]);
-    const fetchVideoModes = async () => {
-        const res = await videoModeServices.getVideoModes();
-        setVideoModes(res);
-    }
-
-    useEffect(() => {
-        fetchCrewPositions();
-        fetchPackages();
-        fetchLanguages();
-        fetchGenres();
-        fetchCountries();
-        fetchStudios();
-        fetchClassifications();
-        fetchCategories();
-        fetchVideoModes();
-    }, []);
-
-    const [casts, setCasts] = useState([{ characterName: '', actorName: '', isMain: false }]);
-
-    const handleAddCast = () => {
-        setCasts([...casts, { characterName: '', actorName: '', isMain: false }]);
-    };
-
-    const handleInputChange = (index, field, value) => {
-        const newCasts = [...casts];
-        newCasts[index][field] = value;
-        setCasts(newCasts);
-    };
-
-    const [crewMembers, setCrewMembers] = useState([{ name: '', positionId: '' }]);
-
-    const handleAddCrewMember = () => {
-        setCrewMembers([...crewMembers, { name: '', positionId: '' }]);
-    };
-
-    const handleCrewChange = (index, field, value) => {
-        const newCrewMembers = [...crewMembers];
-        newCrewMembers[index][field] = value;
-        setCrewMembers(newCrewMembers);
-    };
-
-    const [canRent, setCanRent] = useState(true);
-
-    const genresOptions = genres.map((genre) => ({
-        value: genre.id,
-        label: genre.name
-    }));
-    const [selectedGenres, setSelectedGenres] = useState([]);
-    const handleGenreChange = (selectedGenre) => {
-        setSelectedGenres(selectedGenre);
-    }
-
-    const languageOptions = languages.map((language) => ({
-        value: language.id,
-        label: language.name
-    }));
-    const [selectedLanguages, setSelectedLanguages] = useState([]);
-    const handleLanguageChange = (selectedLanguages) => {
-        setSelectedLanguages(selectedLanguages);
-    }
-
-    const [episodeQty, setEpisodeQty] = useState(1);
-    // const onChangeEpisodeQty = (e) => {
-    //     setEpisodeQty(e.target.value);
-    // }
-
-    const [isShow, setIsShow] = useState(true);
-    const [isShowAtHome, setIsShowAtHome] = useState(false);
-
-    const initMovie = {
-        title: '',
-        originalTitle: '',
-        price: '',
-        packageId: '',
-        storyline: '',
-        trailer: '',
-        duration: '',
-        releaseYear: '',
-        countryId: '',
-        studioId: '',
-        videoModeId: '',
-        classificationId: '',
-        categoryId: '',
-        isShow: false,
-        isShowAtHome: false
-    }
-
-    const [slug, setSlug] = useState('');
-    const fetchSlug = async (title, releaseYear) => {
-        const data = await commonServices.checkAndCreateSlug('movie', title, releaseYear);
-        if (data && data.status === 200) {
-            setSlug(data.data);
-        }
-    }
-
-    const [newMovie, setNewMovie] = useState(initMovie);
-
-    const onChangeMovie = (e) => {
-        const {name, value} = e.target;
-        setNewMovie(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    }
-
-    useEffect(() => {
-        fetchSlug(newMovie.originalTitle, newMovie.releaseYear);
-    }, [newMovie.title, newMovie.releaseYear]);
-
-    const handleCreateMovie = async (e) => {
+    const handleEditMovie = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append('title', newMovie.title);
-        formData.append('originalTitle', newMovie.originalTitle);
-        formData.append('slug', slug);
+        formData.append('id', movie.id);
+        formData.append('title', movie.title);
+        formData.append('originalTitle', movie.originalTitle);
+        formData.append('slug', movie.slug);
         formData.append('canRent', canRent);
-        formData.append('price', newMovie.price);
-        formData.append('packageId', newMovie.packageId);
-        formData.append('storyline', newMovie.storyline);
+        formData.append('price', movie.price);
+        formData.append('packageId', movie.packageId);
+        formData.append('storyline', movie.storyLine);
         if (selectedPoster !== null) {
             formData.append('poster', selectedPoster);
         }
@@ -325,13 +374,13 @@ const CreateMovie = () => {
             formData.append('image', selectedImage);
         }
         formData.append('trailer', trailerLink);
-        formData.append('duration', newMovie.duration);
-        formData.append('releaseYear', newMovie.releaseYear);
-        formData.append('countryId', newMovie.countryId);
-        formData.append('studioId', newMovie.studioId);
-        formData.append('videoModeId', newMovie.videoModeId);
-        formData.append('classificationId', newMovie.classificationId);
-        formData.append('categoryId', newMovie.categoryId);
+        formData.append('duration', movie.duration);
+        formData.append('releaseYear', movie.releaseYear);
+        formData.append('countryId', movie.countryId);
+        formData.append('studioId', movie.studioId);
+        formData.append('videoModeId', movie.videoModeId);
+        formData.append('classificationId', movie.classificationId);
+        formData.append('categoryId', movie.categoryId);
         formData.append('isShow', isShow);
         formData.append('isShowAtHome', isShowAtHome);
 
@@ -353,47 +402,31 @@ const CreateMovie = () => {
             }
         }
 
-        const castsData = casts.map((cast) => ({
-            'characterName': cast.characterName,
-            'actorName': cast.actorName,
-            'isMain': cast.isMain
-        }));
-        formData.append('casts', JSON.stringify(castsData));
+        // const castsData = casts.map((cast) => ({
+        //     'characterName': cast.characterName,
+        //     'actorName': cast.actorName,
+        //     'isMain': cast.isMain
+        // }));
+        // formData.append('casts', JSON.stringify(castsData));
+        //
+        // const crewData = crewMembers.map((crew) => ({
+        //     'name': crew.name,
+        //     'crewPositionId': crew.positionId
+        // }));
+        // formData.append('crewMembers', JSON.stringify(crewData));
 
-        const crewData = crewMembers.map((crew) => ({
-            'name': crew.name,
-            'crewPositionId': crew.positionId
-        }));
-        formData.append('crewMembers', JSON.stringify(crewData));
-
-        const data = await movieServices.createMovie(formData, axiosConfig);
-        if (data && data.responseCode === 201){
+        const data = await movieServices.updateMovie(formData, axiosConfig);
+        if (data && data.responseCode === 200){
             setToastType('success');
             setToastMessage(data.responseMessage);
             setShowToast(true);
-            setNewMovie(initMovie);
-            setCanRent(true);
-            setSelectedPoster(null);
-            setPreviewPoster(defaultPoster);
-            setTrailerLink('');
-            setTrailerId(null);
-            setPreviewEpisodes([]);
-            episodeRefs.current = [];
-            setThumbnails([]);
-            setCasts([{ characterName: '', actorName: '', isMain: false }]);
-            setCrewMembers([{ name: '', positionId: '' }]);
-            setSelectedGenres([]);
-            setSelectedLanguages([]);
-            setEpisodeQty(0);
-            setIsShow(true);
-            setIsShowAtHome(false);
             navigate(MOVIES_LIST);
         }else {
             setToastType('danger');
             setToastMessage(data.responseMessage);
             setShowToast(true);
         }
-    }
+    };
 
     return (
         <div className={'container-xxl flex-grow-1 container-p-y'}>
@@ -403,7 +436,7 @@ const CreateMovie = () => {
                 </div>
             </div>
             <br/>
-            <form onSubmit={handleCreateMovie} encType='multipart/form-data'>
+            <form onSubmit={handleEditMovie} encType='multipart/form-data'>
                 <div className="row">
                     {/*Large content area*/}
                     <div className="col-md-8">
@@ -420,7 +453,7 @@ const CreateMovie = () => {
                                         id="titleInput"
                                         placeholder="Movie title"
                                         name={'title'}
-                                        value={newMovie.title}
+                                        value={movie.title}
                                         onChange={onChangeMovie}
                                     />
                                 </div>
@@ -432,7 +465,7 @@ const CreateMovie = () => {
                                         id="originalTitleInput"
                                         placeholder="Movie original title"
                                         name={'originalTitle'}
-                                        value={newMovie.originalTitle}
+                                        value={movie.originalTitle}
                                         onChange={onChangeMovie}
                                     />
                                 </div>
@@ -445,7 +478,7 @@ const CreateMovie = () => {
                                             id="releaseYearInput"
                                             placeholder={'Release year'}
                                             name={'releaseYear'}
-                                            value={newMovie.releaseYear}
+                                            value={movie.releaseYear}
                                             onChange={onChangeMovie}
                                         />
                                     </div>
@@ -457,7 +490,7 @@ const CreateMovie = () => {
                                                 className="form-control"
                                                 placeholder="Duration"
                                                 name={'duration'}
-                                                value={newMovie.duration}
+                                                value={movie.duration}
                                                 onChange={onChangeMovie}
                                             />
                                             <span className="input-group-text">minutes</span>
@@ -472,8 +505,7 @@ const CreateMovie = () => {
                                             id="slugInput"
                                             placeholder="Slug"
                                             name={'slug'}
-                                            value={slug}
-                                            // onChange={onChangeMovie}
+                                            value={movie.slug}
                                         />
                                     </div>
                                 </div>
@@ -484,7 +516,7 @@ const CreateMovie = () => {
                                             className="form-select"
                                             id={'countryIdInput'}
                                             name={'countryId'}
-                                            value={newMovie.countryId}
+                                            value={movie.countryId}
                                             onChange={onChangeMovie}
                                         >
                                             <option value="">Select a country</option>
@@ -500,7 +532,7 @@ const CreateMovie = () => {
                                             className="form-select"
                                             id={'studioIdInput'}
                                             name={'studioId'}
-                                            value={newMovie.studioId}
+                                            value={movie.studioId}
                                             onChange={onChangeMovie}
                                         >
                                             <option value="">Select a studio</option>
@@ -517,7 +549,7 @@ const CreateMovie = () => {
                                             className="form-select"
                                             id={'classificationIdInput'}
                                             name={'classificationId'}
-                                            value={newMovie.classificationId}
+                                            value={movie.classificationId}
                                             onChange={onChangeMovie}
                                         >
                                             <option value="">Select a Classification</option>
@@ -534,7 +566,7 @@ const CreateMovie = () => {
                                             className="form-select"
                                             id={'categoryIdInput'}
                                             name={'categoryId'}
-                                            value={newMovie.categoryId}
+                                            value={movie.categoryId}
                                             onChange={onChangeMovie}
                                         >
                                             <option value="">Select a Category</option>
@@ -550,7 +582,7 @@ const CreateMovie = () => {
                                             className="form-select"
                                             id={'countryIdInput'}
                                             name={'videoModeId'}
-                                            value={newMovie.videoModeId}
+                                            value={movie.videoModeId}
                                             onChange={onChangeMovie}
                                         >
                                             <option value="">Select a video quality</option>
@@ -584,9 +616,9 @@ const CreateMovie = () => {
                                     <textarea className="form-control"
                                               id="stoylineInput"
                                               rows="5"
-                                                name={'storyline'}
-                                                value={newMovie.storyline}
-                                                onChange={onChangeMovie}
+                                              name={'storyLine'}
+                                              value={movie.storyLine}
+                                              onChange={onChangeMovie}
                                     >
                                     </textarea>
                                 </div>
@@ -620,7 +652,7 @@ const CreateMovie = () => {
                                         </div>
                                     ) : null}
                                     {episodeQty > 0 ? (
-                                        Array.from({ length: episodeQty }).map((_, index) => (
+                                        Array.from({length: episodeQty}).map((_, index) => (
                                             <div className="col-md-6 offset-3" key={index}>
                                                 <div className="mb-3 row">
                                                     {/*<label htmlFor={`episodeTitleInput${index}`}
@@ -654,101 +686,101 @@ const CreateMovie = () => {
                                 </div>
                             </div>
                         </div>
-                        <br/>
-                        <div className="card">
-                            <div className="card-header pb-1">
-                                <h5>Casts and Crew</h5>
-                            </div>
-                            <div className="card-body">
-                                <label htmlFor="castInput" className="form-label">Casts</label>
-                                {casts.map((cast, index) => (
-                                    <div className="row mb-3" key={index}>
-                                        <div className="col-md-5">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="Character Name"
-                                                value={cast.characterName}
-                                                onChange={(e) => handleInputChange(index, 'characterName', e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="col-md-5">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="Actor Name"
-                                                value={cast.actorName}
-                                                onChange={(e) => handleInputChange(index, 'actorName', e.target.value)}
-                                            />
-                                        </div>
-                                        <div className={'col-md-2'}>
-                                            <div className={'d-flex align-items-center'}>
-                                                <div className="form-check me-2">
-                                                    <input
-                                                        className="form-check-input"
-                                                        type="checkbox"
-                                                        checked={cast.isMain}
-                                                        onChange={(e) => handleInputChange(index, 'isMain', e.target.checked)}
-                                                    />
-                                                    <label className="form-check-label">Main</label>
-                                                </div>
-                                                {index === casts.length - 1 && (
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-icon btn-primary"
-                                                        onClick={handleAddCast}
-                                                    >
-                                                        <span className="tf-icons bx bx-plus"></span>
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                                <label htmlFor="crewInput" className="form-label">Crew</label>
-                                <div id="crewInput">
-                                    {crewMembers.map((crew, index) => (
-                                        <div className="row d-flex mb-3" key={index}>
-                                            <div className="col-md-5">
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    placeholder="Member name"
-                                                    value={crew.name}
-                                                    onChange={(e) => handleCrewChange(index, 'name', e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="col-md-5">
-                                                <select
-                                                    className="form-select"
-                                                    value={crew.positionId}
-                                                    onChange={(e) => handleCrewChange(index, 'positionId', e.target.value)}
-                                                >
-                                                    <option value="">Select a position</option>
-                                                    {Array.isArray(crewPositions) && crewPositions.map((position, posIndex) => (
-                                                        <option key={posIndex}
-                                                                value={position.id}>{position.name}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                            {index === crewMembers.length - 1 && (
-                                                <div className="col-md-2">
-                                                    <div className="text-center">
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-icon btn-primary"
-                                                            onClick={handleAddCrewMember}
-                                                        >
-                                                            <span className="tf-icons bx bx-plus"></span>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
+                        {/*<br/>*/}
+                        {/*<div className="card">*/}
+                        {/*    <div className="card-header pb-1">*/}
+                        {/*        <h5>Casts and Crew</h5>*/}
+                        {/*    </div>*/}
+                        {/*    <div className="card-body">*/}
+                        {/*        <label htmlFor="castInput" className="form-label">Casts</label>*/}
+                        {/*        {casts.map((cast, index) => (*/}
+                        {/*            <div className="row mb-3" key={index}>*/}
+                        {/*                <div className="col-md-5">*/}
+                        {/*                    <input*/}
+                        {/*                        type="text"*/}
+                        {/*                        className="form-control"*/}
+                        {/*                        placeholder="Character Name"*/}
+                        {/*                        value={cast.characterName}*/}
+                        {/*                        onChange={(e) => handleCastChange(index, 'characterName', e.target.value)}*/}
+                        {/*                    />*/}
+                        {/*                </div>*/}
+                        {/*                <div className="col-md-5">*/}
+                        {/*                    <input*/}
+                        {/*                        type="text"*/}
+                        {/*                        className="form-control"*/}
+                        {/*                        placeholder="Actor Name"*/}
+                        {/*                        value={cast.actorName}*/}
+                        {/*                        onChange={(e) => handleCastChange(index, 'actorName', e.target.value)}*/}
+                        {/*                    />*/}
+                        {/*                </div>*/}
+                        {/*                <div className="col-md-2">*/}
+                        {/*                    <div className="d-flex align-items-center">*/}
+                        {/*                        <div className="form-check me-2">*/}
+                        {/*                            <input*/}
+                        {/*                                className="form-check-input"*/}
+                        {/*                                type="checkbox"*/}
+                        {/*                                checked={cast.isMain}*/}
+                        {/*                                onChange={(e) => handleCastChange(index, 'isMain', e.target.checked)}*/}
+                        {/*                            />*/}
+                        {/*                            <label className="form-check-label">Main</label>*/}
+                        {/*                        </div>*/}
+                        {/*                        {index === casts.length - 1 && (*/}
+                        {/*                            <button*/}
+                        {/*                                type="button"*/}
+                        {/*                                className="btn btn-icon btn-primary"*/}
+                        {/*                                onClick={handleAddCast}*/}
+                        {/*                            >*/}
+                        {/*                                <span className="tf-icons bx bx-plus"></span>*/}
+                        {/*                            </button>*/}
+                        {/*                        )}*/}
+                        {/*                    </div>*/}
+                        {/*                </div>*/}
+                        {/*            </div>*/}
+                        {/*        ))}*/}
+                        {/*        <label htmlFor="crewInput" className="form-label">Crew</label>*/}
+                        {/*        <div id="crewInput">*/}
+                        {/*            {crewMembers.map((crew, index) => (*/}
+                        {/*                <div className="row d-flex mb-3" key={index}>*/}
+                        {/*                    <div className="col-md-5">*/}
+                        {/*                        <input*/}
+                        {/*                            type="text"*/}
+                        {/*                            className="form-control"*/}
+                        {/*                            placeholder="Member name"*/}
+                        {/*                            value={crew.name}*/}
+                        {/*                            onChange={(e) => handleCrewChange(index, 'name', e.target.value)}*/}
+                        {/*                        />*/}
+                        {/*                    </div>*/}
+                        {/*                    <div className="col-md-5">*/}
+                        {/*                        <select*/}
+                        {/*                            className="form-select"*/}
+                        {/*                            value={crew.positionId}*/}
+                        {/*                            onChange={(e) => handleCrewChange(index, 'positionId', e.target.value)}*/}
+                        {/*                        >*/}
+                        {/*                            <option value="">Select a position</option>*/}
+                        {/*                            {Array.isArray(crewPositions) && crewPositions.map((position, posIndex) => (*/}
+                        {/*                                <option key={posIndex}*/}
+                        {/*                                        value={position.id}>{position.name}</option>*/}
+                        {/*                            ))}*/}
+                        {/*                        </select>*/}
+                        {/*                    </div>*/}
+                        {/*                    {index === crewMembers.length - 1 && (*/}
+                        {/*                        <div className="col-md-2">*/}
+                        {/*                            <div className="text-center">*/}
+                        {/*                                <button*/}
+                        {/*                                    type="button"*/}
+                        {/*                                    className="btn btn-icon btn-primary"*/}
+                        {/*                                    onClick={handleAddCrewMember}*/}
+                        {/*                                >*/}
+                        {/*                                    <span className="tf-icons bx bx-plus"></span>*/}
+                        {/*                                </button>*/}
+                        {/*                            </div>*/}
+                        {/*                        </div>*/}
+                        {/*                    )}*/}
+                        {/*                </div>*/}
+                        {/*            ))}*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
                     </div>
                     {/*Small content area*/}
                     <div className="col-md-4">
@@ -763,7 +795,7 @@ const CreateMovie = () => {
                                         className="form-select"
                                         id={'packageIdInput'}
                                         name={'packageId'}
-                                        value={newMovie.packageId}
+                                        value={movie.packageId}
                                         onChange={onChangeMovie}
                                     >
                                         <option value="">Select a package</option>
@@ -783,7 +815,7 @@ const CreateMovie = () => {
                                                     className="form-check-input"
                                                     type="checkbox"
                                                     id="canRentCheck"
-                                                    checked={canRent}
+                                                    checked={movie.canRent}
                                                     onChange={(e) => setCanRent(e.target.checked)}
                                                 />
                                             </div>
@@ -798,7 +830,7 @@ const CreateMovie = () => {
                                                         className="form-control"
                                                         placeholder="Price"
                                                         name={'price'}
-                                                        value={newMovie.price}
+                                                        value={movie.price}
                                                         onChange={onChangeMovie}
                                                     />
                                                 </div>
@@ -927,7 +959,7 @@ const CreateMovie = () => {
                             <button type="submit"
                                     className="btn btn-success"
                             >
-                                <span className="tf-icons bx bx-plus"></span>&nbsp; Create
+                                <span className="tf-icons bx bx-send"></span>&nbsp; Update
                             </button>
                             <button type="button" className="btn btn-secondary ms-3" data-bs-dismiss="modal">
                                 <span className="tf-icons bx bx-x"></span>&nbsp; Cancel
@@ -959,4 +991,4 @@ const CreateMovie = () => {
     )
 }
 
-export default CreateMovie;
+export default EditMovie;
